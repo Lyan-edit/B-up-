@@ -5,23 +5,27 @@ from pathlib import Path
 
 from .config import CrawlConfig
 from .crawler import crawl_up
+from .interactive import main as interactive_main
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Standalone Bilibili UP crawler with academic report export")
-    parser.add_argument("--target", required=True, help="MID or Bilibili space URL")
+    parser.add_argument("--target", help="MID or Bilibili space URL")
     parser.add_argument("--video-limit", type=int, default=30, help="Number of recent videos to fetch")
     parser.add_argument("--comment-video-count", type=int, default=10, help="How many videos to sample for hot comments")
     parser.add_argument("--comment-page-size", type=int, default=30, help="How many hot comments to fetch per sampled video")
     parser.add_argument("--output-root", default=str(Path.cwd() / "exports"), help="Export root")
     parser.add_argument("--show-browser", action="store_true", help="Show Edge instead of running headless")
     parser.add_argument("--edge-binary", default=None, help="Optional explicit path to msedge.exe")
+    parser.add_argument("--interactive", action="store_true", help="Prompt for target and options interactively")
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.interactive or not args.target:
+        return interactive_main()
     config = CrawlConfig(
         target=args.target,
         video_limit=args.video_limit,

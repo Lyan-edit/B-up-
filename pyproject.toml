@@ -33,6 +33,7 @@ dev = [
 
 [project.scripts]
 bili-up-crawler = "bili_up_crawler.cli:main"
+bili-up-crawler-interactive = "bili_up_crawler.interactive:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

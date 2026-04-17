@@ -22,12 +22,14 @@ bili_up_crawler/
     __main__.py
     browser.py
     cli.py
+    interactive.py
     client.py
     config.py
     crawler.py
     report.py
     signing.py
     targets.py
+  start_crawler.bat
   tests/
   examples/
     sample_output/
@@ -65,6 +67,21 @@ pip install -r requirements.txt
 python -m bili_up_crawler --target 946974
 ```
 
+如果你更希望直接双击启动，在 Windows 下可以运行仓库根目录的：
+
+```text
+start_crawler.bat
+```
+
+双击后会自动提示你输入：
+
+- UP 空间链接 / MID / UID
+- 视频抓取数
+- 评论采样视频数
+- 每个视频抓取的热门评论数
+- 是否显示浏览器窗口
+- 导出目录
+
 也可以输入空间链接：
 
 ```bash
@@ -75,6 +92,12 @@ python -m bili_up_crawler --target https://space.bilibili.com/546195
 
 ```bash
 bili-up-crawler --target 946974
+```
+
+或者进入交互模式：
+
+```bash
+bili-up-crawler --interactive
 ```
 
 ## 常用命令示例
@@ -211,6 +234,8 @@ python -m bili_up_crawler --target 946974 --video-limit 10 --comment-video-count
 
 3. 等待终端输出导出目录路径。
 
+如果你不想敲命令，也可以直接双击 `start_crawler.bat`，然后按照界面提示输入 URL 或 UID。
+
 ### 3. 查看结果
 
 1. 先打开 `summary.json`，确认本次实际导出的文件位置。
@@ -272,6 +297,8 @@ pytest -q
 - `MID / 空间链接` 解析
 - WBI 签名稳定性
 - 爬虫导出链路
+- CLI 无参数时自动进入交互模式
+- 交互模式默认值与自定义输入
 - 评论抓取关闭场景
 - 学术报告生成在空样本场景下不崩溃
 
