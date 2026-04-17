@@ -1,54 +1,130 @@
 # bili_up_crawler
 
-这是从原项目里单独摘出来的“B 站 UP 抓取代码”版本，只保留爬虫能力，不包含论文材料、论文脚本、分析面板和论文专用文案。
+A standalone crawler for public Bilibili UP account data.
 
-## 功能
+This repository only contains the crawler code extracted from a larger local project. It does not include thesis material, Word automation scripts, or report-generation logic tied to academic writing.
 
-- 输入 `MID` 或 B 站空间链接
-- 自动启动 Edge + Selenium 获取 WBI / 风控参数
-- 抓取账号概况
-- 抓取最近 N 期正式视频
-- 抓取热门评论代理样本
-- 导出原始 JSONL 和结构化 CSV
+## Features
 
-## 目录
+- Accept a Bilibili `MID` or space URL as input
+- Bootstrap a browser context with Edge + Selenium
+- Fetch account profile data
+- Fetch recent formal videos from the UP space
+- Fetch hot-comment proxy samples from top videos
+- Export raw JSONL and structured CSV outputs
 
-| 文件 | 说明 |
-| --- | --- |
-| `config.py` | 抓取参数配置 |
-| `targets.py` | 目标账号解析 |
-| `signing.py` | WBI 签名 |
-| `browser.py` | Edge 上下文引导 |
-| `client.py` | B 站接口客户端 |
-| `crawler.py` | 主抓取逻辑与导出 |
-| `cli.py` | 命令行入口 |
+## Project Layout
 
-## 安装依赖
-
-```bash
-pip install requests selenium
+```text
+bili_up_crawler/
+  src/bili_up_crawler/
+    __init__.py
+    __main__.py
+    browser.py
+    cli.py
+    client.py
+    config.py
+    crawler.py
+    signing.py
+    targets.py
+  tests/
+  examples/
+    sample_output/
+  exports/
+  LICENSE
+  pyproject.toml
+  README.md
 ```
 
-## 使用
+## Installation
+
+### Recommended
+
+```bash
+pip install -e .
+```
+
+### Minimal runtime dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+
+### Module entrypoint
+
+After `pip install -e .`:
 
 ```bash
 python -m bili_up_crawler --target 946974
 python -m bili_up_crawler --target https://space.bilibili.com/546195 --video-limit 5 --comment-video-count 2
 ```
 
-## 输出
+### Console script
 
-每次运行会在 `exports/<账号名>_<时间戳>/` 下生成：
+After `pip install -e .`:
 
-- `raw/account_snapshot.json`
-- `raw/video_raw.jsonl`
-- `raw/comment_raw.jsonl`
-- `processed/videos.csv`
-- `processed/comments.csv`
-- `summary.json`
+```bash
+bili-up-crawler --target 946974
+```
 
-## 说明
+### Options
 
-- 评论样本来自热门评论，不代表全体粉丝。
-- 只保留抓取代码，不包含论文内容和论文导出逻辑。
-- 如果要公开上传 GitHub，推荐只上传这个目录。
+- `--target`: MID or Bilibili space URL
+- `--video-limit`: number of recent videos to fetch
+- `--comment-video-count`: how many videos to sample for hot comments
+- `--comment-page-size`: how many hot comments to fetch per sampled video
+- `--output-root`: export directory root
+- `--show-browser`: disable headless mode and show Edge
+- `--edge-binary`: explicit path to `msedge.exe`
+
+## Output
+
+Each run creates a new timestamped directory under `exports/`:
+
+```text
+exports/<account_name>_<timestamp>/
+  raw/
+    account_snapshot.json
+    video_raw.jsonl
+    comment_raw.jsonl
+  processed/
+    videos.csv
+    comments.csv
+  summary.json
+```
+
+## Example Output
+
+See [`examples/`](./examples) for a small sample of exported files:
+
+- [`examples/sample_output/summary.json`](./examples/sample_output/summary.json)
+- [`examples/sample_output/videos.csv`](./examples/sample_output/videos.csv)
+- [`examples/sample_output/comments.csv`](./examples/sample_output/comments.csv)
+
+## Development
+
+### Run tests
+
+```bash
+pytest -q
+```
+
+### Current test coverage
+
+- target parsing
+- WBI signing stability with a fixed timestamp
+- crawler export flow with mocked client/browser dependencies
+- disabled comment sampling behavior
+
+## Notes and Limitations
+
+- Hot comments are only a proxy sample and do not represent all followers.
+- The crawler depends on a working Microsoft Edge installation.
+- Some Bilibili endpoints may change over time.
+- This repository intentionally excludes thesis-only code and content.
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).

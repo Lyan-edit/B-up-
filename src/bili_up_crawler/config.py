@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-DEFAULT_EXPORT_ROOT = Path(__file__).resolve().parent / "exports"
+DEFAULT_EXPORT_ROOT = Path.cwd() / "exports"
 
 
 @dataclass(slots=True)

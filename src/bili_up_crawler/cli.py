@@ -13,7 +13,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--video-limit", type=int, default=30, help="Number of recent videos to fetch")
     parser.add_argument("--comment-video-count", type=int, default=10, help="How many videos to sample for hot comments")
     parser.add_argument("--comment-page-size", type=int, default=30, help="How many hot comments to fetch per sampled video")
-    parser.add_argument("--output-root", default=str(Path(__file__).resolve().parent / "exports"), help="Export root")
+    parser.add_argument("--output-root", default=str(Path.cwd() / "exports"), help="Export root")
     parser.add_argument("--show-browser", action="store_true", help="Show Edge instead of running headless")
     parser.add_argument("--edge-binary", default=None, help="Optional explicit path to msedge.exe")
     return parser

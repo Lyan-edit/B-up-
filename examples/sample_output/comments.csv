@@ -1,0 +1,2 @@
+video_bvid,video_title,rpid,comment_like,comment_reply_count,member_mid,member_name,member_sex,member_level,member_vip_status,member_official_type,member_sign,comment_message
+BVTEST001,示例视频,1,2,0,2001,示例用户,男,5,1,-1,hello,这是一条示例评论

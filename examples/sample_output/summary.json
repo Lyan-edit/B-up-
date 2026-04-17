@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-04-17 13:30:00",
+  "mid": 946974,
+  "account_name": "示例账号",
+  "space_url": "https://space.bilibili.com/946974",
+  "video_count": 1,
+  "comment_sample_count": 1,
+  "files": {
+    "account_snapshot_json": "raw/account_snapshot.json",
+    "video_raw_jsonl": "raw/video_raw.jsonl",
+    "comment_raw_jsonl": "raw/comment_raw.jsonl",
+    "videos_csv": "processed/videos.csv",
+    "comments_csv": "processed/comments.csv"
+  }
+}

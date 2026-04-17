@@ -1,0 +1,2 @@
+sample_index,bvid,aid,title,description,pubdate,duration,duration_minutes,view,like,coin,favorite,share,reply,danmaku,tname,author,tag_names
+1,BVTEST001,1001,示例视频,这是一个示例视频输出,2026-04-17 13:30:00,600,10,9999,500,30,20,10,5,8,科技,示例账号,科技、数码
