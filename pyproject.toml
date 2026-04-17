@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bili-up-crawler"
-version = "0.1.0"
-description = "A standalone crawler for public Bilibili UP account data."
+version = "0.2.0"
+description = "A standalone crawler for public Bilibili UP account data with academic-ready report export."
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}

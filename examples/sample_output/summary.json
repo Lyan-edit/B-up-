@@ -10,6 +10,8 @@
     "video_raw_jsonl": "raw/video_raw.jsonl",
     "comment_raw_jsonl": "raw/comment_raw.jsonl",
     "videos_csv": "processed/videos.csv",
-    "comments_csv": "processed/comments.csv"
+    "comments_csv": "processed/comments.csv",
+    "academic_report_md": "reports/academic_report.md",
+    "academic_report_html": "reports/academic_report.html"
   }
 }

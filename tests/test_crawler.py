@@ -98,12 +98,20 @@ def test_crawl_up_exports_expected_files(tmp_path, monkeypatch) -> None:
     assert len(result.comments) == 1
     assert result.exports.videos_csv.exists()
     assert result.exports.comments_csv.exists()
+    assert result.exports.academic_report_md.exists()
+    assert result.exports.academic_report_html.exists()
     assert result.exports.summary_json.exists()
 
     summary = json.loads(result.exports.summary_json.read_text(encoding="utf-8"))
     assert summary["account_name"] == "测试账号"
     assert summary["video_count"] == 1
     assert summary["comment_sample_count"] == 1
+    assert summary["files"]["academic_report_md"] == "reports/academic_report.md"
+    assert summary["files"]["academic_report_html"] == "reports/academic_report.html"
+
+    report_text = result.exports.academic_report_md.read_text(encoding="utf-8")
+    assert "学术写作参考段落" in report_text
+    assert "评论样本仅代表热门评论中的活跃评论用户代理样本，不代表全体粉丝。" in report_text
 
 
 def test_crawl_up_skips_comment_fetch_when_disabled(tmp_path, monkeypatch) -> None:

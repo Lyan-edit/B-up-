@@ -11,6 +11,11 @@ from typing import Any
 from .browser import bootstrap_browser_context
 from .client import BiliClient
 from .config import CrawlConfig
+from .report import (
+    build_academic_report_html,
+    build_academic_report_markdown,
+    build_academic_report_payload,
+)
 from .targets import ParsedTarget, parse_target
 
 
@@ -57,11 +62,14 @@ class CrawlExports:
     base_dir: Path
     raw_dir: Path
     processed_dir: Path
+    reports_dir: Path
     account_snapshot_json: Path
     video_raw_jsonl: Path
     comment_raw_jsonl: Path
     videos_csv: Path
     comments_csv: Path
+    academic_report_md: Path
+    academic_report_html: Path
     summary_json: Path
 
 
@@ -95,17 +103,22 @@ def _build_exports(output_root: Path, account_name: str, mid: int) -> CrawlExpor
     base_dir = output_root / f"{safe_name}_{timestamp}"
     raw_dir = base_dir / "raw"
     processed_dir = base_dir / "processed"
+    reports_dir = base_dir / "reports"
     raw_dir.mkdir(parents=True, exist_ok=True)
     processed_dir.mkdir(parents=True, exist_ok=True)
+    reports_dir.mkdir(parents=True, exist_ok=True)
     return CrawlExports(
         base_dir=base_dir,
         raw_dir=raw_dir,
         processed_dir=processed_dir,
+        reports_dir=reports_dir,
         account_snapshot_json=raw_dir / "account_snapshot.json",
         video_raw_jsonl=raw_dir / "video_raw.jsonl",
         comment_raw_jsonl=raw_dir / "comment_raw.jsonl",
         videos_csv=processed_dir / "videos.csv",
         comments_csv=processed_dir / "comments.csv",
+        academic_report_md=reports_dir / "academic_report.md",
+        academic_report_html=reports_dir / "academic_report.html",
         summary_json=base_dir / "summary.json",
     )
 
@@ -126,6 +139,10 @@ def _write_csv(path: Path, rows: list[dict[str, Any]], headers: list[str]) -> No
         writer.writeheader()
         for row in rows:
             writer.writerow({header: row.get(header, "") for header in headers})
+
+
+def _relative_export_path(base_dir: Path, path: Path) -> str:
+    return path.relative_to(base_dir).as_posix()
 
 
 def crawl_up(
@@ -243,26 +260,46 @@ def crawl_up(
             )
             raw_comment_records.append({"video_bvid": video["bvid"], "reply": reply})
 
+    generated_at = datetime.now()
+    report_payload = build_academic_report_payload(
+        account=account,
+        videos=videos,
+        comments=comments,
+        target=target,
+        config=config,
+        generated_at=generated_at,
+    )
+
     _write_json(exports.account_snapshot_json, account)
     _write_jsonl(exports.video_raw_jsonl, raw_video_records)
     _write_jsonl(exports.comment_raw_jsonl, raw_comment_records)
     _write_csv(exports.videos_csv, videos, VIDEO_HEADERS)
     _write_csv(exports.comments_csv, comments, COMMENT_HEADERS)
+    exports.academic_report_md.write_text(
+        build_academic_report_markdown(report_payload),
+        encoding="utf-8",
+    )
+    exports.academic_report_html.write_text(
+        build_academic_report_html(report_payload),
+        encoding="utf-8",
+    )
     _write_json(
         exports.summary_json,
         {
-            "generated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "generated_at": generated_at.strftime("%Y-%m-%d %H:%M:%S"),
             "mid": target.mid,
             "account_name": account["acc_info"].get("name"),
             "space_url": target.space_url,
             "video_count": len(videos),
             "comment_sample_count": len(comments),
             "files": {
-                "account_snapshot_json": str(exports.account_snapshot_json),
-                "video_raw_jsonl": str(exports.video_raw_jsonl),
-                "comment_raw_jsonl": str(exports.comment_raw_jsonl),
-                "videos_csv": str(exports.videos_csv),
-                "comments_csv": str(exports.comments_csv),
+                "account_snapshot_json": _relative_export_path(exports.base_dir, exports.account_snapshot_json),
+                "video_raw_jsonl": _relative_export_path(exports.base_dir, exports.video_raw_jsonl),
+                "comment_raw_jsonl": _relative_export_path(exports.base_dir, exports.comment_raw_jsonl),
+                "videos_csv": _relative_export_path(exports.base_dir, exports.videos_csv),
+                "comments_csv": _relative_export_path(exports.base_dir, exports.comments_csv),
+                "academic_report_md": _relative_export_path(exports.base_dir, exports.academic_report_md),
+                "academic_report_html": _relative_export_path(exports.base_dir, exports.academic_report_html),
             },
         },
     )

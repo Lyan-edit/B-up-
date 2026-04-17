@@ -8,7 +8,7 @@ from .crawler import crawl_up
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Standalone Bilibili UP crawler")
+    parser = argparse.ArgumentParser(description="Standalone Bilibili UP crawler with academic report export")
     parser.add_argument("--target", required=True, help="MID or Bilibili space URL")
     parser.add_argument("--video-limit", type=int, default=30, help="Number of recent videos to fetch")
     parser.add_argument("--comment-video-count", type=int, default=10, help="How many videos to sample for hot comments")
@@ -35,6 +35,8 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Export directory: {result.exports.base_dir}")
     print(f"Videos CSV: {result.exports.videos_csv}")
     print(f"Comments CSV: {result.exports.comments_csv}")
+    print(f"Academic report (Markdown): {result.exports.academic_report_md}")
+    print(f"Academic report (HTML): {result.exports.academic_report_html}")
     print(f"Summary JSON: {result.exports.summary_json}")
     return 0
 
